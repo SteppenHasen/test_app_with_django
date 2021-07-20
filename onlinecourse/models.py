@@ -22,7 +22,6 @@ class Instructor(models.Model):
     def __str__(self):
         return self.user.username
 
-
 # Learner model
 class Learner(models.Model):
     user = models.ForeignKey(
@@ -51,7 +50,6 @@ class Learner(models.Model):
         return self.user.username + "," + \
                self.occupation
 
-
 # Course model
 class Course(models.Model):
     name = models.CharField(null=False, max_length=30, default='online course')
@@ -67,14 +65,12 @@ class Course(models.Model):
         return "Name: " + self.name + "," + \
                "Description: " + self.description
 
-
 # Lesson model
 class Lesson(models.Model):
     title = models.CharField(max_length=200, default="title")
     order = models.IntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     content = models.TextField()
-
 
 # Enrollment model
 # <HINT> Once a user enrolled a class, an enrollment entry should be created between the user and course
@@ -94,40 +90,33 @@ class Enrollment(models.Model):
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
     rating = models.FloatField(default=5.0)
 
-
 # Question Model
 class Question(models.Model):
     courses = models.ManyToManyField(Course)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     question_content = models.TextField(null=False)
-    grade_point = models.CharField()
-    question = [
-        question_content,
-        grade_point
-    ]
+    grade_point = models.CharField(max_length=5)
 
-    def is_get_score(self, selected_ids) {
+    def is_get_score(self, selected_ids):
         all_answers = self.choise_set.filter(is_correct=True).count()
         if all_answers == selected_correct:
             return True
         else:
             return False
-    }
 
 # Choice Model with:
 class Choice(models.Model):
     questions = models.ManyToManyField(Question)
-    choice = models.CharField()
+    choice = models.CharField(max_length=5)
     
-    def is_correct(self, choice) {
+    def is_correct(self, choice):
         if choice == grade_point:
             return True
         else:
             return False
-    }
 
 # The submission model
 class Submission(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     chocies = models.ManyToManyField(Choice)
-    submission = models.CharField()
+    submission = models.CharField(max_length=5)
