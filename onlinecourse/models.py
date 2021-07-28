@@ -9,7 +9,6 @@ except Exception:
 from django.conf import settings
 import uuid
 
-
 # Instructor model
 class Instructor(models.Model):
     user = models.ForeignKey(
@@ -73,8 +72,6 @@ class Lesson(models.Model):
     content = models.TextField()
 
 # Enrollment model
-# <HINT> Once a user enrolled a class, an enrollment entry should be created between the user and course
-# And we could use the enrollment to track information such as exam submissions
 class Enrollment(models.Model):
     AUDIT = 'audit'
     HONOR = 'honor'
@@ -98,8 +95,8 @@ class Question(models.Model):
     grade_point = models.CharField(max_length=5)
 
     def is_get_score(self, selected_ids):
-        all_answers = self.choise_set.filter(is_correct=True).count()
-        if all_answers == selected_correct:
+        all_choices = self.choice_set.filter(is_correct=True).count()
+        if all_choices == selected_ids:
             return True
         else:
             return False
@@ -109,8 +106,8 @@ class Choice(models.Model):
     questions = models.ManyToManyField(Question)
     choice = models.CharField(max_length=5)
     
-    def is_correct(self, choice):
-        if choice == grade_point:
+    def correct_choice(self, ans, grade):
+        if ans == grade:
             return True
         else:
             return False
@@ -118,5 +115,5 @@ class Choice(models.Model):
 # The submission model
 class Submission(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
-    chocies = models.ManyToManyField(Choice)
+    choices = models.ManyToManyField(Choice)
     submission = models.CharField(max_length=5)
