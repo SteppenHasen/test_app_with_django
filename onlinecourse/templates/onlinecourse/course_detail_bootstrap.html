@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
      {% load static %}
+     {% load extra %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -51,7 +52,7 @@
                 {% endfor %}
             </div>
             <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#exam" aria-expanded="false" aria-controls="exam" style="width: 100%">Start exam</button>
-            <form id="exam" class="card-columns-vertical collapse" method="post">
+            <form id="exam" class="card-columns-vertical collapse" action="{% url 'onlinecourse:passExam' course.id %}" method="post">
                 {% for question in course.question_set.all %}
                 <div class="card mt-1">
                     <div class="card-header"><h5>{{question.question_content}}</h5></div>
@@ -61,7 +62,8 @@
                         <div class="form-check">
                             <label class="form-check-label">
                                 <input class="form-check-input" type="checkbox"
-                                value="{{choice.id}}" name="choice_{{choice.id}}" 
+                                {% custom_tag question.id choice.id as select_ids %}
+                                value="{{select_ids}}" name="choices" 
                                 id="{{choice.id}}"> {{ choice.choice }}
                             </label>
                         </div>
@@ -69,7 +71,7 @@
                     </div>
                 </div>
                 {% endfor %}
-                <button type="button" class="btn btn-success" style="width: 100%;">Submit</button>
+                <button type="submit" form="exam" class="btn btn-success" style="width: 100%;">Submit</button>
             </form>
     </div>
 </body>

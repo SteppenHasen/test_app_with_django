@@ -13,6 +13,7 @@ urlpatterns = [
     path('<int:pk>/', views.CourseDetailView.as_view(), name='course_details'),
     # ex: /enroll/5/
     path('<int:course_id>/enroll/', views.enroll, name='enroll'),
+    path('course/<int:course_id>/pass_exam', views.passExam, name='passExam'),
     path('course/<int:course_id>/submission/<int:submission_id>/result/',views.CourseResultView.as_view(), name='exam_result'),
 
  ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,4 +1,5 @@
 import sys
+from django.http import request
 from django.utils.timezone import now
 try:
     from django.db import models
@@ -117,3 +118,41 @@ class Submission(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     choices = models.ManyToManyField(Choice)
     submission = models.CharField(max_length=5)
+
+
+
+# VIEWS
+# клиент(браузер) -=  хтмл страницу(там же яваскрипт формы и прочее) ----//
+
+# ---------> sends request  ----------|
+#                                     |
+# server <-----------------------------
+
+# middleware
+
+# function myMiddleware(request) {
+#     doing some stuff(logging, defense, ........)
+#     call_next_middleware(request)
+# }
+
+# 1
+# 2
+# 3
+# 4
+# 5
+# 6
+# 7
+# 8
+# 9
+# 10
+# 11
+
+# MVC !!!!
+
+# через роутинг, система котороя мапит урл запроса на класс Контроллер и дальше на его экшн
+# -----> request to controller -----> some action calls ------|   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< you can call Model абстракция над доступом в бд
+#                                                             |
+# ответ(json, html, just status code) <------------------------
+# |
+# |
+# --------------> обрабатывает ответ (яваскриптом парсит json и чет выводит)

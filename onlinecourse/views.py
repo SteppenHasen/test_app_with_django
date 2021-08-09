@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseGone
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 # <HINT> Import any new Models here
@@ -8,6 +9,7 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib.auth import login, logout, authenticate
 import logging
+import json
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 # Create your views here.
@@ -99,36 +101,47 @@ def enroll(request, course_id):
 
     return HttpResponseRedirect(reverse(viewname='onlinecourse:course_details', args=(course.id,)))
 
-def submit(request, course_id):
-    Enrollment.objects.get(user=request.user, course=course_id)
-    submission = Submission.objects.create(course_id)
+def passExam(request):
+    choices = request.POST.getlist('choices')
+    result = {}
+    for choice in choices:
+        for k,v in json.loads(choice).items():
+            if k in result:result[k].extend(v)
+            else: result[k] = v
+        return result
 
-    def extract_choices(request):
-        submitted_choices = []
-        for key in request.POST:
-            if key.startswith('choice'):
-                value = request.POST[key]
-                choice_id = int(value)
-                submitted_choices.append(choice_id)
-        return submitted_choices
+    
 
-    return HttpResponseRedirect(reverse(viewname='onlinecourse:exam_result', args=(submission.id, extract_choices)))
+    return HttpResponseGone('Gone away')
+    # Enrollment.objects.get(user=request.user, course=course_id)
+    # submission = Submission.objects.create(course_id)
 
-def show_exam_result(request, course_id, submission_id):
-    Submission.objects.get(course=course_id, submission=submission_id)
+    # def extract_choices(request):
+    #     submitted_choices = []
+    #     for key in request.POST:
+    #         if key.startswith('choice'):
+    #             value = request.POST[key]
+    #             choice_id = int(value)
+    #             submitted_choices.append(choice_id)
+    #     return submitted_choices
 
-    def count(extract_choices, grade_point):
-        count_correct = []
-        for choice in extract_choices:
-            if choice.correct_choice(choice, grade_point)== True:
-                count_correct.append(choice)
-                return count_correct
-        score = count_correct.count()
-        return score
+    # return HttpResponseRedirect(reverse(viewname='onlinecourse:exam_result', args=(submission.id)))
 
-    minimum_score = 80
-    if count >= minimum_score:
-        ...
-    else:
-        ...
+# def show_exam_result(request, course_id, submission_id):
+#     Submission.objects.get(course=course_id, submission=submission_id)
+
+#     def count(extract_choices, grade_point):
+#         count_correct = []
+#         for choice in extract_choices:
+#             if choice.correct_choice(choice, grade_point)== True:
+#                 count_correct.append(choice)
+#                 return count_correct
+#         score = count_correct.count()
+#         return score
+
+#     minimum_score = 80
+#     if count >= minimum_score:
+#         ...
+#     else:
+#         ...
     
