@@ -101,43 +101,30 @@ def enroll(request, course_id):
 
     return HttpResponseRedirect(reverse(viewname='onlinecourse:course_details', args=(course.id,)))
 
-def passExam(request):
+def passExam(request, course_id):
+    print("OLOLO")
     choices = request.POST.getlist('choices')
     result = {}
+    point = 0
     for choice in choices:
         for k,v in json.loads(choice).items():
             if k in result:result[k].extend(v)
             else: result[k] = v
-        return result
 
-    
+    if Question.is_get_score(len(result)) == True:
+        for unit in result:
+            grade = (Question.objects.get(id=int(unit)).__dict__)['grade_point']
+            for i in result[unit]:
+                answer = (Choice.objects.get(id=i).__dict__)['choice']
+                if Choice.correct_choice(answer, grade) == True:
+                    point += 1
+        score = point * 100 / len(result)
+        return HttpResponseRedirect(viewname='onlinecourse:pass_exam')
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-    return HttpResponseGone('Gone away')
     # Enrollment.objects.get(user=request.user, course=course_id)
     # submission = Submission.objects.create(course_id)
-
-    # def extract_choices(request):
-    #     submitted_choices = []
-    #     for key in request.POST:
-    #         if key.startswith('choice'):
-    #             value = request.POST[key]
-    #             choice_id = int(value)
-    #             submitted_choices.append(choice_id)
-    #     return submitted_choices
-
-    # return HttpResponseRedirect(reverse(viewname='onlinecourse:exam_result', args=(submission.id)))
-
-# def show_exam_result(request, course_id, submission_id):
-#     Submission.objects.get(course=course_id, submission=submission_id)
-
-#     def count(extract_choices, grade_point):
-#         count_correct = []
-#         for choice in extract_choices:
-#             if choice.correct_choice(choice, grade_point)== True:
-#                 count_correct.append(choice)
-#                 return count_correct
-#         score = count_correct.count()
-#         return score
 
 #     minimum_score = 80
 #     if count >= minimum_score:

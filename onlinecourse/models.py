@@ -95,9 +95,9 @@ class Question(models.Model):
     question_content = models.TextField(null=False)
     grade_point = models.CharField(max_length=5)
 
-    def is_get_score(self, selected_ids):
-        all_choices = self.choice_set.filter(is_correct=True).count()
-        if all_choices == selected_ids:
+    def is_get_score(selected_ids):
+        all_questions = Question.objects.filter().count()
+        if all_questions == selected_ids:
             return True
         else:
             return False
@@ -107,7 +107,7 @@ class Choice(models.Model):
     questions = models.ManyToManyField(Question)
     choice = models.CharField(max_length=5)
     
-    def correct_choice(self, ans, grade):
+    def correct_choice(ans, grade):
         if ans == grade:
             return True
         else:
