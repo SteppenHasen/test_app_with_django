@@ -119,7 +119,7 @@ def passExam(request, course_id):
                 if Choice.correct_choice(answer, grade) == True:
                     point += 1
         score = point * 100 / len(result)
-        return HttpResponseRedirect(viewname='onlinecourse:pass_exam')
+        return HttpResponseRedirect(viewname='onlinecourse:exam_result', score=score)
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
